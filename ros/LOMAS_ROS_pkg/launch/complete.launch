@@ -1,0 +1,6 @@
+<launch>
+
+  <node pkg="LOMAS_ROS_pkg" type="watering_node.py" name="Watering" output="screen"/>
+
+</launch>
+
