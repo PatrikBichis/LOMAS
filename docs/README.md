@@ -1,5 +1,5 @@
 ## What is LOMAS?
-![Prototype](/images/Bild1.png)
+![Prototype](docs/images/Bild1.png)
 
 ### Parts
 #### Node-red 
