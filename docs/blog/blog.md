@@ -2,8 +2,12 @@
 
 [<-Back](../README.md)
 
+![HMI](../images/HMI.jpg)
+### 2017-09-28 HMI based on Node-Red 
+Starting to test miniature LOMAS with easy user interface
+
 ![LOMAS gets its own laboratory](../images/20170928_114702.jpg)
-### 2017-09-29 LOMAS gets its own laboratory 
+### 2017-09-27 LOMAS gets its own laboratory 
 The miniature LOMAS is alive and some parts of the code is starting to be tested.
 
 ### 2017-09-14 BOM list is done
