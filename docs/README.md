@@ -1,11 +1,10 @@
 ## What is LOMAS?
-
 ...
 
-### Markdown
+### Parts
+...
 
-Installation
-
+### Installation
 ...
 
 ### Progress
