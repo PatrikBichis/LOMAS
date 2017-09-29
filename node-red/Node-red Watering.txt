@@ -1,0 +1,1166 @@
+[
+    {
+        "id": "72c4f86d.0ba9c8",
+        "type": "tab",
+        "label": "Watering"
+    },
+    {
+        "id": "7664a5d5.24515c",
+        "type": "ui_numeric",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "label": "Bevattningstid",
+        "group": "39114115.0b5ede",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "format": "{{value}} sek",
+        "min": 0,
+        "max": "6000",
+        "step": 1,
+        "x": 658.3667602539062,
+        "y": 1715.6003093719482,
+        "wires": [
+            [
+                "edf72634.6b08b8"
+            ]
+        ]
+    },
+    {
+        "id": "7bcd8e9b.608df",
+        "type": "ui_numeric",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "label": "Intervall",
+        "group": "39114115.0b5ede",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "format": "{{value}} sek",
+        "min": 0,
+        "max": "6000",
+        "step": 1,
+        "x": 663.0666885375977,
+        "y": 1662.0001106262207,
+        "wires": [
+            [
+                "29897ec0.ff26c2"
+            ]
+        ]
+    },
+    {
+        "id": "7cb2f137.8cc79",
+        "type": "ui_text",
+        "z": "72c4f86d.0ba9c8",
+        "group": "39114115.0b5ede",
+        "order": 1,
+        "width": "7",
+        "height": "1",
+        "name": "Watering status",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 1357.3671112060547,
+        "y": 54.60004806518555,
+        "wires": []
+    },
+    {
+        "id": "a12c98c6.1da6a8",
+        "type": "ui_text",
+        "z": "72c4f86d.0ba9c8",
+        "group": "39114115.0b5ede",
+        "order": 2,
+        "width": "7",
+        "height": "1",
+        "name": "",
+        "label": "Tid kvar",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 1329.3670959472656,
+        "y": 1032.6001453399658,
+        "wires": []
+    },
+    {
+        "id": "6861cd80.24e3d4",
+        "type": "inject",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "topic": "Trigger each sec",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "x": 235.3000946044922,
+        "y": 1912.733413696289,
+        "wires": [
+            [
+                "308aafc1.ca5"
+            ]
+        ]
+    },
+    {
+        "id": "4abdb113.7be34",
+        "type": "template",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Format calculated value",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{flow.water_count}} sek",
+        "x": 861.3002624511719,
+        "y": 1039.2669582366943,
+        "wires": [
+            [
+                "a12c98c6.1da6a8"
+            ]
+        ]
+    },
+    {
+        "id": "a4b9479d.ec3658",
+        "type": "function",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Calc new value",
+        "func": "var count = flow.get('water_count');\nvar newCount = Number(count) - 1;\n\nvar newMsg = msg;\nnewMsg.payload = newCount;\n\nflow.set('water_count', newCount);\n\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 457.3000793457031,
+        "y": 1042.266897201538,
+        "wires": [
+            [
+                "4abdb113.7be34"
+            ]
+        ]
+    },
+    {
+        "id": "33df87f9.4ed3e8",
+        "type": "inject",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "x": 186.30002784729004,
+        "y": 2053.73370552063,
+        "wires": [
+            [
+                "8496e0d8.810e6"
+            ]
+        ]
+    },
+    {
+        "id": "6c4a5241.5aa6cc",
+        "type": "change",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Set count to intervall",
+        "rules": [
+            {
+                "t": "set",
+                "p": "water_count",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 878.3000640869141,
+        "y": 1610.000202178955,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8380bb1f.4d7898",
+        "type": "template",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Bevatning utförs",
+        "x": 973.3000755310059,
+        "y": 107.00000762939453,
+        "wires": [
+            [
+                "7cb2f137.8cc79",
+                "f04afa81.bb2568"
+            ]
+        ]
+    },
+    {
+        "id": "37081e3d.43f822",
+        "type": "template",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering done",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Väntar på beordring",
+        "x": 996.0000305175781,
+        "y": 170.00000381469727,
+        "wires": [
+            [
+                "7cb2f137.8cc79",
+                "15433.017e8bce"
+            ]
+        ]
+    },
+    {
+        "id": "ef490679.796348",
+        "type": "change",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Set count to intervall value",
+        "rules": [
+            {
+                "t": "set",
+                "p": "water_count",
+                "pt": "flow",
+                "to": "watering_intervall",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1195.000259399414,
+        "y": 566.0000686645508,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "303009f.2b420f6",
+        "type": "switch",
+        "z": "72c4f86d.0ba9c8",
+        "name": "If count <= 0",
+        "property": "water_count",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "lte",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 294.3001174926758,
+        "y": 1198.4666996002197,
+        "wires": [
+            [
+                "e62f7b63.8105f8"
+            ]
+        ]
+    },
+    {
+        "id": "edf72634.6b08b8",
+        "type": "change",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Set watering time from input",
+        "rules": [
+            {
+                "t": "set",
+                "p": "watering_time",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 898.9999542236328,
+        "y": 1716.0002326965332,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e826d603.a6ab68",
+        "type": "template",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Init value",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{flow.watering_time}}",
+        "x": 485.3000946044922,
+        "y": 1714.200122833252,
+        "wires": [
+            [
+                "7664a5d5.24515c"
+            ]
+        ]
+    },
+    {
+        "id": "7211a2f2.aebaec",
+        "type": "template",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Init value",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{flow.watering_intervall}}",
+        "x": 481.99998474121094,
+        "y": 1662.0001106262207,
+        "wires": [
+            [
+                "7bcd8e9b.608df"
+            ]
+        ]
+    },
+    {
+        "id": "29897ec0.ff26c2",
+        "type": "change",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Set intervall value from input",
+        "rules": [
+            {
+                "t": "set",
+                "p": "watering_intervall",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 899.3000640869141,
+        "y": 1660.200122833252,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "af53fbe8.8a8698",
+        "type": "template",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Init value",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{flow.watering_intervall}}",
+        "x": 478.0000457763672,
+        "y": 1612.0001411437988,
+        "wires": [
+            [
+                "6c4a5241.5aa6cc"
+            ]
+        ]
+    },
+    {
+        "id": "88dc159c.655278",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Init values",
+        "info": "",
+        "x": 176.0000228881836,
+        "y": 1571.0002155303955,
+        "wires": []
+    },
+    {
+        "id": "e5503ec8.e13c9",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering logic",
+        "info": "",
+        "x": 198,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "954222a4.46ef3",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Handling count down for next watering",
+        "info": "",
+        "x": 280.0000305175781,
+        "y": 993.0001125335693,
+        "wires": []
+    },
+    {
+        "id": "308aafc1.ca5",
+        "type": "link out",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Seconde puls",
+        "links": [
+            "4fdd295f.b48d48",
+            "ae767f1a.dec6a",
+            "b38fbfe6.9d1fd",
+            "ac4eb8de.755b88",
+            "f463fb55.ef5af8",
+            "10d4daef.5289d5"
+        ],
+        "x": 439.000036239624,
+        "y": 1912.0000114440918,
+        "wires": []
+    },
+    {
+        "id": "4fdd295f.b48d48",
+        "type": "link in",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "links": [
+            "308aafc1.ca5"
+        ],
+        "x": 146.00000858306885,
+        "y": 1198.5000286102295,
+        "wires": [
+            [
+                "303009f.2b420f6"
+            ]
+        ]
+    },
+    {
+        "id": "ae767f1a.dec6a",
+        "type": "link in",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "links": [
+            "308aafc1.ca5"
+        ],
+        "x": 151.00003051757812,
+        "y": 1040.5001125335693,
+        "wires": [
+            [
+                "a4b9479d.ec3658"
+            ]
+        ]
+    },
+    {
+        "id": "99df1e78.e23f6",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Create a seconde puls",
+        "info": "",
+        "x": 215.00003051757812,
+        "y": 1865.000015258789,
+        "wires": []
+    },
+    {
+        "id": "8496e0d8.810e6",
+        "type": "link out",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Startup",
+        "links": [
+            "e8e2e68a.7fc688"
+        ],
+        "x": 441.8985137939453,
+        "y": 2056.199520111084,
+        "wires": []
+    },
+    {
+        "id": "99724ef.54173b",
+        "type": "change",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Disbale watering button",
+        "rules": [
+            {
+                "t": "set",
+                "p": "watering",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 891.0195465087891,
+        "y": 1775.0040168762207,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a03ca4b9.710e28",
+        "type": "change",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Save watering state",
+        "rules": [
+            {
+                "t": "set",
+                "p": "watering",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1169.0196990966797,
+        "y": 613.0039143562317,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5fdbc681.7b13b8",
+        "type": "ui_button",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "group": "39114115.0b5ede",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Avbryt",
+        "color": "",
+        "bgcolor": "grey",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "Kultivera",
+        "x": 1119.0195922851562,
+        "y": 885.0041542053223,
+        "wires": [
+            [
+                "16b27dcf.d475f2"
+            ]
+        ]
+    },
+    {
+        "id": "f093eae6.30e1c8",
+        "type": "change",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering",
+        "rules": [
+            {
+                "t": "set",
+                "p": "enabled",
+                "pt": "msg",
+                "to": "watering",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 285.0195541381836,
+        "y": 893.003945350647,
+        "wires": [
+            [
+                "5fdbc681.7b13b8"
+            ]
+        ]
+    },
+    {
+        "id": "16b27dcf.d475f2",
+        "type": "link out",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering abort command ",
+        "links": [
+            "da0f003b.3bd96",
+            "c6fc1c34.3082b"
+        ],
+        "x": 1316.894624710083,
+        "y": 885.1914529800415,
+        "wires": []
+    },
+    {
+        "id": "1ff8916b.b8d6bf",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Handling abort button for watering",
+        "info": "",
+        "x": 272.01954650878906,
+        "y": 839.003924369812,
+        "wires": []
+    },
+    {
+        "id": "29674acc.dab1f6",
+        "type": "ui_button",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "group": "39114115.0b5ede",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Starta bevattning",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "Kultivera",
+        "x": 1156.0197143554688,
+        "y": 749.0040283203125,
+        "wires": [
+            [
+                "446d177.43b7ee8"
+            ]
+        ]
+    },
+    {
+        "id": "f67838e5.44f9f8",
+        "type": "change",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering?",
+        "rules": [
+            {
+                "t": "set",
+                "p": "enabled",
+                "pt": "msg",
+                "to": "watering",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 282.94744873046875,
+        "y": 751.4466876983643,
+        "wires": [
+            [
+                "7264d694.48a4b8"
+            ]
+        ]
+    },
+    {
+        "id": "7264d694.48a4b8",
+        "type": "function",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Invert",
+        "func": "\nif(msg.enabled){\n    msg.enabled = false;\n}else{\n    msg.enabled = true;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 448.93957901000977,
+        "y": 750.6029329299927,
+        "wires": [
+            [
+                "29674acc.dab1f6"
+            ]
+        ]
+    },
+    {
+        "id": "446d177.43b7ee8",
+        "type": "link out",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering start command ",
+        "links": [
+            "41193d99.084734",
+            "9c622760.181178"
+        ],
+        "x": 1312.898675918579,
+        "y": 749.1876058578491,
+        "wires": []
+    },
+    {
+        "id": "41193d99.084734",
+        "type": "link in",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "links": [
+            "446d177.43b7ee8"
+        ],
+        "x": 501.88672065734863,
+        "y": 64.14844131469727,
+        "wires": [
+            [
+                "7c39b553.14796c"
+            ]
+        ]
+    },
+    {
+        "id": "ac4eb8de.755b88",
+        "type": "link in",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "links": [
+            "308aafc1.ca5"
+        ],
+        "x": 143.01953125,
+        "y": 752.0040302276611,
+        "wires": [
+            [
+                "f67838e5.44f9f8"
+            ]
+        ]
+    },
+    {
+        "id": "f463fb55.ef5af8",
+        "type": "link in",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "links": [
+            "308aafc1.ca5"
+        ],
+        "x": 151.01953887939453,
+        "y": 892.0039129257202,
+        "wires": [
+            [
+                "f093eae6.30e1c8"
+            ]
+        ]
+    },
+    {
+        "id": "6108d38b.ebf6bc",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Handling start button for watering",
+        "info": "",
+        "x": 253.01953887939453,
+        "y": 697.0039682388306,
+        "wires": []
+    },
+    {
+        "id": "eaaac0e.382644",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering finished event",
+        "info": "",
+        "x": 225.01953887939453,
+        "y": 551.0039319992065,
+        "wires": []
+    },
+    {
+        "id": "88c3ef8e.3a6ce",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering started event",
+        "info": "",
+        "x": 220.01953887939453,
+        "y": 419.0039167404175,
+        "wires": []
+    },
+    {
+        "id": "15433.017e8bce",
+        "type": "link out",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering finsihed",
+        "links": [
+            "36903a67.ac04b6"
+        ],
+        "x": 1296.890733718872,
+        "y": 168.19140529632568,
+        "wires": []
+    },
+    {
+        "id": "36903a67.ac04b6",
+        "type": "link in",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "links": [
+            "15433.017e8bce",
+            "2fee6759.5db9f8"
+        ],
+        "x": 143.8906364440918,
+        "y": 596.1367721557617,
+        "wires": [
+            [
+                "ef490679.796348",
+                "a03ca4b9.710e28"
+            ]
+        ]
+    },
+    {
+        "id": "7c39b553.14796c",
+        "type": "change",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Set count to 0",
+        "rules": [
+            {
+                "t": "set",
+                "p": "water_count",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 657.0195846557617,
+        "y": 73.0039644241333,
+        "wires": [
+            [
+                "8380bb1f.4d7898"
+            ]
+        ]
+    },
+    {
+        "id": "ef6c3810.ec3aa8",
+        "type": "change",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Save watering state",
+        "rules": [
+            {
+                "t": "set",
+                "p": "watering",
+                "pt": "flow",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1163.0388641357422,
+        "y": 451.0078411102295,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4d2d71e6.46075",
+        "type": "link in",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "links": [
+            "f04afa81.bb2568",
+            "5a215caa.1ec324"
+        ],
+        "x": 138.8906364440918,
+        "y": 456.148455619812,
+        "wires": [
+            [
+                "ef6c3810.ec3aa8"
+            ]
+        ]
+    },
+    {
+        "id": "f04afa81.bb2568",
+        "type": "link out",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering started",
+        "links": [
+            "4d2d71e6.46075"
+        ],
+        "x": 1293.898515701294,
+        "y": 100.19921875,
+        "wires": []
+    },
+    {
+        "id": "85b2811d.fe35c",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Start command",
+        "info": "",
+        "x": 340.01953887939453,
+        "y": 64.00391006469727,
+        "wires": []
+    },
+    {
+        "id": "da0f003b.3bd96",
+        "type": "link in",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "links": [
+            "16b27dcf.d475f2"
+        ],
+        "x": 502.8828706741333,
+        "y": 219.13281059265137,
+        "wires": [
+            [
+                "37081e3d.43f822"
+            ]
+        ]
+    },
+    {
+        "id": "55691ac1.d8ae14",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Abort command",
+        "info": "",
+        "x": 342.01953125,
+        "y": 217.00390815734863,
+        "wires": []
+    },
+    {
+        "id": "a77a0bac.b1bcf8",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Handling automatic start of watering",
+        "info": "",
+        "x": 269.01953125,
+        "y": 1142.0039291381836,
+        "wires": []
+    },
+    {
+        "id": "e62f7b63.8105f8",
+        "type": "link out",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering automatic start",
+        "links": [
+            "aa5998b6.47e9d8"
+        ],
+        "x": 1314.8867359161377,
+        "y": 1190.2032165527344,
+        "wires": []
+    },
+    {
+        "id": "489a1a24.2e4aa4",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Handling automatic stop of watering",
+        "info": "",
+        "x": 271.01953125,
+        "y": 1295.003930091858,
+        "wires": []
+    },
+    {
+        "id": "f0915a14.85e148",
+        "type": "link out",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering automatic stop",
+        "links": [
+            "cd848bc7.023958"
+        ],
+        "x": 1320.8867359161377,
+        "y": 1355.2032194137573,
+        "wires": []
+    },
+    {
+        "id": "3090f774.73b908",
+        "type": "function",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Watering for spec. time",
+        "func": "var count = flow.get('water_count');\nvar target = flow.get('watering_time');\n\nvar newMsg = msg;\nif(count <= (target*-1))\n{\n    newMsg.payload = true;\n}else{\n    newMsg.payload = false;\n}\n\nreturn newMsg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 589.0195617675781,
+        "y": 1360.0040016174316,
+        "wires": [
+            [
+                "84ed1073.38985"
+            ]
+        ]
+    },
+    {
+        "id": "f82bd88f.55ff68",
+        "type": "switch",
+        "z": "72c4f86d.0ba9c8",
+        "name": "If count <= 0",
+        "property": "water_count",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "lte",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 298.0196075439453,
+        "y": 1359.2706565856934,
+        "wires": [
+            [
+                "3090f774.73b908"
+            ]
+        ]
+    },
+    {
+        "id": "84ed1073.38985",
+        "type": "switch",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Done?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 821.019588470459,
+        "y": 1360.0039415359497,
+        "wires": [
+            [
+                "f0915a14.85e148"
+            ]
+        ]
+    },
+    {
+        "id": "10d4daef.5289d5",
+        "type": "link in",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "links": [
+            "308aafc1.ca5"
+        ],
+        "x": 146.71949863433838,
+        "y": 1360.3039274215698,
+        "wires": [
+            [
+                "f82bd88f.55ff68"
+            ]
+        ]
+    },
+    {
+        "id": "aa5998b6.47e9d8",
+        "type": "link in",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "links": [
+            "e62f7b63.8105f8"
+        ],
+        "x": 499.8828411102295,
+        "y": 108.14844703674316,
+        "wires": [
+            [
+                "8380bb1f.4d7898"
+            ]
+        ]
+    },
+    {
+        "id": "fbb681ec.c6a9f",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Automatic start command",
+        "info": "",
+        "x": 371.01954650878906,
+        "y": 109.00391006469727,
+        "wires": []
+    },
+    {
+        "id": "55b31237.9e27ac",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Automatic stop command",
+        "info": "",
+        "x": 370.01953125,
+        "y": 169.00390625,
+        "wires": []
+    },
+    {
+        "id": "cd848bc7.023958",
+        "type": "link in",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "links": [
+            "f0915a14.85e148"
+        ],
+        "x": 502.8828411102295,
+        "y": 165.1406307220459,
+        "wires": [
+            [
+                "37081e3d.43f822"
+            ]
+        ]
+    },
+    {
+        "id": "a470aa24.55f038",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Create startup puls",
+        "info": "",
+        "x": 207.01952743530273,
+        "y": 2000.0039157867432,
+        "wires": []
+    },
+    {
+        "id": "e8e2e68a.7fc688",
+        "type": "link in",
+        "z": "72c4f86d.0ba9c8",
+        "name": "",
+        "links": [
+            "8496e0d8.810e6"
+        ],
+        "x": 133.89844131469727,
+        "y": 1683.144718170166,
+        "wires": [
+            [
+                "af53fbe8.8a8698",
+                "7211a2f2.aebaec",
+                "e826d603.a6ab68",
+                "99724ef.54173b"
+            ]
+        ]
+    },
+    {
+        "id": "a8349431.033948",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Start puls",
+        "info": "",
+        "x": 248.01953125,
+        "y": 1654.0039920806885,
+        "wires": []
+    },
+    {
+        "id": "3aaecdfe.857c92",
+        "type": "comment",
+        "z": "72c4f86d.0ba9c8",
+        "name": "Create empty space between buttons",
+        "info": "",
+        "x": 271.01953125,
+        "y": 1426.00390625,
+        "wires": []
+    },
+    {
+        "id": "3fe8958.d8d336a",
+        "type": "ui_template",
+        "z": "72c4f86d.0ba9c8",
+        "group": "39114115.0b5ede",
+        "name": "Watering empty space",
+        "order": 6,
+        "width": "7",
+        "height": "3",
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "x": 220.89453887939453,
+        "y": 1470.644624710083,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "39114115.0b5ede",
+        "type": "ui_group",
+        "z": "",
+        "name": "Bevattning",
+        "tab": "567d36e2.1f0048",
+        "order": 1,
+        "disp": true,
+        "width": "8"
+    },
+    {
+        "id": "567d36e2.1f0048",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Översikt",
+        "icon": "dashboard",
+        "order": "1"
+    }
+]
