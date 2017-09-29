@@ -2,16 +2,16 @@
 ...
 
 ### Parts
-####Node-red 
+#### Node-red 
 High-level control and logic
 * Webbased user interface (HMI)
 
-####ROS
+#### ROS
 Low-level control and logic
 * Interface module to telemetry sensors throw firmata protocol
 * Interface module to machine throw G-Code protocol
 
-####CNC.js
+#### CNC.js
 Advance machine user interface for G-Code
 
 ### Installation
