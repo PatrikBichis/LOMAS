@@ -1,6 +1,6 @@
 ## Progress
 
-[<-Back](blog/blog.md)
+[<-Back](../README.md)
 
 ![LOMAS gets its own laboratory](../images/20170928_114702.jpg)
 ### 2017-09-29 LOMAS gets its own laboratory 
