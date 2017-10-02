@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # license removed for brevit
+import rospy
 
 def main():
 
