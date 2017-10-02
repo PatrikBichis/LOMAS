@@ -1,1 +1,1 @@
-int8 command
+uint8 command

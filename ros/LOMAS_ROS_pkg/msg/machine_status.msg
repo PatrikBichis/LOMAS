@@ -1,10 +1,10 @@
-Bool IsSynced
-Bool SequensStarted
-Bool MachineMoving
-int8 SequenseNr
-float X
-float Y
-float Z
-!StartTime
-!FinishedTime
-!ErrorNr
+bool  IsSynced
+bool  SequensStarted
+bool  MachineMoving
+uint8 SequenseNr
+uint8 ErrorNr
+float32 X
+float32 Y
+float32 Z
+time StartTime
+time FinishedTime
