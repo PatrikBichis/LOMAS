@@ -2,7 +2,7 @@
 
   <node pkg="LOMAS_ROS_pkg" type="watering_node.py" name="watering" output="screen">
     <param name="sim_port" value="false"/>
-    <param name="port" value="/dev/ttyUSB1"/>
+    <param name="port" value="/dev/ttyACM0"/>
     <param name="watering_interval" value="120"/>
     <param name="watering_time" value="20"/>
   </node>
