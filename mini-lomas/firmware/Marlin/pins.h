@@ -636,7 +636,7 @@
     #define BEEPER_PIN          39
 
   #else
-
+    // LOMAS
     #define X_STEP_PIN          12
     #define X_DIR_PIN           11
     #define X_ENABLE_PIN        35
@@ -650,7 +650,7 @@
     #define Z_STEP_PIN          9
     #define Z_DIR_PIN           6
     #define Z_ENABLE_PIN        42
-    #define Z_STOP_PIN          -1
+    #define Z_STOP_PIN          62 //a8
 
     // #if ENABLED(Z_MIN_PROBE_ENDSTOP)
     //   // Define a pin to use as the signal pin on Arduino for the Z_PROBE endstop.
@@ -715,7 +715,7 @@
     #define BTN_EN2             28
     #define BTN_ENC             30
 
-    #define SD_DETECT_PIN       62//A8
+    #define SD_DETECT_PIN       69//A15
     #define BEEPER_PIN          39
 
 #if MB(RAMPS_13_EEB)  //FMM added for Filament Extruder
