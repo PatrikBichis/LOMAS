@@ -11,13 +11,8 @@ from LOMAS_ROS_pkg.msg import machine_status
 from std_msgs.msg import *
 
 
-# Settings
-#IsInSimMode = True
-
-
 # Global var
 status = machine_status()
-last_status = machine_status()
 stop = False
 abort = False
 #port = "/dev/ttyUSB0"
@@ -26,10 +21,7 @@ abort = False
 # Defining publisher
 pubMachineStatus = rospy.Publisher('LOMAS_MachineState', machine_status, queue_size=10)
 
-status.ErrorNr = 0
-last_status.ErrorNr = 99
-update = False
-
+status.ErrorNr = 99
 
 
 def loadParameters():
@@ -43,7 +35,7 @@ def loadParameters():
     path = rospy.get_param('~path', "/media/gcode/")
     status.Interval = rospy.get_param('~cultivation_interval', 120)
 
-    print 'Param values'
+    print 'Machine param values'
     print IsInSimMode
     print port
     print path
@@ -191,13 +183,24 @@ def stopCallback(data):
     stop = data.data
 
 
-
-
 def abortCallback(data):
     global abort
 
     print 'Abort'
     abort = data.data
+
+
+def intervallCallback(data):
+    global status
+
+    print 'Set intervall'
+    print data.data
+
+    status.Interval = data.data
+    rospy.set_param('~cultivation_interval', data.data)
+
+    pubMachineStatus.publish(status)
+
 
 
 def cmdCallback(data):
@@ -251,13 +254,12 @@ def cmdCallback(data):
 
 def main():
     global status
-    global last_status
-    global update
 
-    # Subscribe for teleoperations
+    # Subscribe 
     rospy.Subscriber("LOMAS_MachineCmd", std_msgs.msg.UInt8, cmdCallback)
     rospy.Subscriber("LOMAS_MachineStop", std_msgs.msg.Bool, stopCallback)
     rospy.Subscriber("LOMAS_MachineAbort", std_msgs.msg.Bool, abortCallback)
+    rospy.Subscriber("LOMAS_MachineSetIntervall", std_msgs.msg.UInt8, intervallCallback)
     rospy.loginfo("Starting up machine node")
 
     rospy.init_node('machine', anonymous=False)
@@ -271,13 +273,9 @@ def main():
     rate = rospy.Rate(10)  # 10hz
 
     while not rospy.is_shutdown():
-        #if update:
-            #pubMachineStatus.publish(status)
-            #last_status = status
-            #update = False
 
         rate.sleep()
-        #print("been here!")
+
 
     if IsInSimMode == False:
         s.close()
