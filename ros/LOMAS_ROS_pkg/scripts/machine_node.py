@@ -11,33 +11,45 @@ from LOMAS_ROS_pkg.msg import machine_status
 from std_msgs.msg import *
 
 
-# Settings
-#IsInSimMode = True
-
-
 # Global var
 status = machine_status()
-last_status = machine_status()
+stop = False
+abort = False
 #port = "/dev/ttyUSB0"
 #path = "/media/gcode/"
 
 # Defining publisher
 pubMachineStatus = rospy.Publisher('LOMAS_MachineState', machine_status, queue_size=10)
 
-status.ErrorNr = 0
-last_status.ErrorNr = 99
-update = False
+status.ErrorNr = 99
+
 
 def loadParameters():
     global IsInSimMode
+    global Status
+    global port
+    global path
     
     IsInSimMode = rospy.get_param('~sim_port', True)
     port = rospy.get_param('~port', "/dev/ttyUSB0")
     path = rospy.get_param('~path', "/media/gcode/")
-    print 'Param values'
+    status.Interval = rospy.get_param('~cultivation_interval', 120)
+
+    print 'Machine param values'
     print IsInSimMode
     print port
     print path
+    pubMachineStatus.publish(status)
+
+
+
+def removeComment(string):
+    if (string.find(';')==-1):
+        return string
+    else:
+        return string[:string.index(';')]
+
+
 
 def connectToMachine():
     global s
@@ -67,6 +79,8 @@ def connectToMachine():
 
     pubMachineStatus.publish(status)
 
+
+
 def sendSerialCmd(cmd):
     global s
 
@@ -83,7 +97,66 @@ def sendSerialCmd(cmd):
     else:
         return False
 
+
+
+def sendGCodeFile(file, seq):
+    global status
+    global stop
+    global abort
+    global f
+
+    status.SequensStarted = True
+    status.MachineMoving = True
+
+    stop = False
+    abort = False
+
+    pubMachineStatus.publish(status)
+    # Open g-code file
+    #f = open('/media/UNTITLED/shoulder.g','r');
+    f = open(file,'r');
+    print 'Opening gcode file'
     
+    # Stream g-code
+    for line in f:
+        l = removeComment(line)
+        l = l.strip() # Strip all EOL characters for streaming
+        if (l.isspace()==False and len(l)>0) :
+            ok = sendSerialCmd(l + '\n')
+
+        if stop:
+            print 'Stopped'
+            status.SequenseNr = 90
+            status.MachineMoving = False
+            pubMachineStatus.publish(status)
+            while stop:
+                if abort:
+                    status.SequenseNr = 91
+                    print 'Aborting while'
+                    pubMachineStatus.publish(status)
+                    break
+
+                time.sleep(0.1)
+
+            print 'Restarted'
+            status.MachineMoving = True
+            status.SequenseNr = seq
+            pubMachineStatus.publish(status)
+            
+        if abort:
+            status.SequenseNr = 91
+            pubMachineStatus.publish(status)
+            print 'Aborting for'
+            break
+
+    f.close()
+    status.ErrorNr = 0
+    status.SequensStarted = False
+    status.MachineMoving = False
+    status.SequenseNr = 0
+    abort = False
+    
+
 
 def sendGCodeCmd(cmd):
     global status
@@ -103,16 +176,52 @@ def sendGCodeCmd(cmd):
         status.SequenseNr = 0
 
         
+def stopCallback(data):
+    global stop
+
+    print 'Stop '
+    stop = data.data
+
+
+def abortCallback(data):
+    global abort
+
+    print 'Abort'
+    abort = data.data
+
+
+def intervallCallback(data):
+    global status
+
+    print 'Set intervall'
+    print data.data
+
+    status.Interval = data.data
+    rospy.set_param('~cultivation_interval', data.data)
+
+    pubMachineStatus.publish(status)
+
+
 
 def cmdCallback(data):
     global status
+    global path
+    global stop
+    global abort
  
     if data.data == 99:
         print 'Starting to home robot'
         status.IsSynced = False
-        sendGCodeCmd('G28 X Y' + '\n')
+        sendGCodeCmd('G28 X Y Z' + '\n')
         status.IsSynced = True
-
+    elif data.data == 1:
+        print 'Send cultivation.g file'
+        status.SequenseNr = 1
+        sendGCodeFile(path + 'cultivation.g', 1)
+    elif data.data == 2:
+        print 'Send seed.g file'
+        status.SequenseNr = 2
+        sendGCodeFile(path + 'seed.g', 2)
     elif data.data == 90:
         print 'Man. pos X'
         sendGCodeCmd('G91\n'+'G0 X10 F1000\n')
@@ -127,52 +236,50 @@ def cmdCallback(data):
         sendGCodeCmd('G91\n'+'G0 Y-10 F1000\n')
     elif data.data == 94:
         print 'Man. pos X pos Y'
-        sendGCodeCmd('G91\n'+'G0 x10 Y10 F1000\n')
+        sendGCodeCmd('G91\n'+'G0 X10 Y10 F1000\n')
     elif data.data == 95:
         print 'Man. neg X pos Y'
-        sendGCodeCmd('G91\n'+'G0 X-10 Y10 Y10 F1000\n')
+        sendGCodeCmd('G91\n'+'G0 X-10 Y10 F1000\n')
     elif data.data == 96:
         print 'Man. pos X neg Y'
-        sendGCodeCmd('G91\n'+'G0 X10 Y-10 Y10 F1000\n')
+        sendGCodeCmd('G91\n'+'G0 X10 Y-10 F1000\n')
     elif data.data == 97:
         print 'Man. neg X neg Y'
-        sendGCodeCmd('G91\n'+'G0 X-10 Y-10 Y10 F1000\n')
+        sendGCodeCmd('G91\n'+'G0 X-10 Y-10 F1000\n')
 
     pubMachineStatus.publish(status)
     print data
 
 
 
-
 def main():
     global status
-    global last_status
-    global update
 
-    # Subscribe for teleoperations
+    # Subscribe 
     rospy.Subscriber("LOMAS_MachineCmd", std_msgs.msg.UInt8, cmdCallback)
+    rospy.Subscriber("LOMAS_MachineStop", std_msgs.msg.Bool, stopCallback)
+    rospy.Subscriber("LOMAS_MachineAbort", std_msgs.msg.Bool, abortCallback)
+    rospy.Subscriber("LOMAS_MachineSetIntervall", std_msgs.msg.UInt8, intervallCallback)
     rospy.loginfo("Starting up machine node")
 
     rospy.init_node('machine', anonymous=False)
 
     loadParameters()
     connectToMachine()
+    pubMachineStatus.publish(status)
 
     print 'Machine is waiting for command..'
 
     rate = rospy.Rate(10)  # 10hz
 
     while not rospy.is_shutdown():
-        #if update:
-            #pubMachineStatus.publish(status)
-            #last_status = status
-            #update = False
 
         rate.sleep()
-        #print("been here!")
+
 
     if IsInSimMode == False:
         s.close()
+        f.close()
 
 
 if __name__ == '__main__':

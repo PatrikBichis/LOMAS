@@ -1,15 +1,17 @@
 <launch>
 
   <node pkg="LOMAS_ROS_pkg" type="watering_node.py" name="watering" output="screen">
-    <parma name="watering_interval" value="120">
-    <parma name="watering_time" value="20">
+    <param name="sim_port" value="false"/>
+    <param name="port" value="/dev/ttyUSB1"/>
+    <param name="watering_interval" value="120"/>
+    <param name="watering_time" value="20"/>
   </node>
 
   <node pkg="LOMAS_ROS_pkg" type="machine_node.py" name="machine" output="screen">
-    <param name="sim_port" value="true"/>
+    <param name="sim_port" value="false"/>
     <param name="port" value="/dev/ttyUSB0"/>
     <param name="path" value="/media/gcode/"/>
-    <parma name="cultivation_interval" value="120">
+    <param name="cultivation_interval" value="120"/>
   </node>
 
 </launch>
