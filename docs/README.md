@@ -6,18 +6,18 @@
 High-level control and logic
 * Webbased user interface (HMI)
 
-![Prototype](images/HMI.PNG)
+![HMI](images/HMI.PNG)
 
 #### ROS
 Low-level control and logic
 * Interface module to telemetry sensors throw firmata protocol
 * Interface module to machine throw G-Code protocol
 
-![Prototype](images/machine_node.png)
+![machine_node](images/machine_node.png)
 
-![Prototype](images/watering_node.png)
+![watering_node](images/watering_node.png)
 
-![Prototype](images/seq_generation_node.png)
+![seq_generation_node](images/seq_generation_node.png)
 
 #### CNC.js
 Advance machine user interface for G-Code
