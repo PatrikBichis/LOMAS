@@ -24,17 +24,22 @@ def loadParameters():
     global IsInSimMode
     global Status
     global port
+    global watering_valve_pin
     
     IsInSimMode = rospy.get_param('~sim_port', True)
     port = rospy.get_param('~port', "/dev/ttyACM0")
     status.Interval = rospy.get_param('~watering_interval', 120)
     status.Duration = rospy.get_param('~watering_time', 120)
+    watering_valve_pin = rospy.get_param('~watering_valve_pin', 13)
 
-    print 'Watering param values'
-    print IsInSimMode
-    print port
-    print status.Interval
-    print status.Duration
+    print 'Watering param values:'
+    print " * IsInSimMode: ", IsInSimMode
+    print " * Port:        ", port
+    print " * Interval:    ", status.Interval
+    print " * Duration:    ", status.Duration
+    print " * Valve pin:   ", watering_valve_pin
+    print ''
+
     pubWateringStatus.publish(status)
 
 
@@ -44,9 +49,20 @@ def abortCallback(data):
     """
 
     global abort
+    global board
+    global IsInSimMode
 
     print 'Abort'
     abort = data.data
+
+    if abort == True :
+        if IsInSimMode == False :
+            board.digital[13].write(0)
+
+            status.Watering == False
+        else :
+            print 'Warning ! Simulating valve turn off'
+            status.Watering == False
 
 
 def intervalCallback(data):
@@ -86,10 +102,20 @@ def cmdCallback(data):
     Handling watering cmd
     """
     global status
+    global IsInSimMode
 
-    status.Watering = bool(data.data==1)
+    if IsInSimMode == False:
+        status.Watering = bool(data.data==1)
 
-    board.digital[13].write(data.data)
+        board.digital[13].write(data.data)
+    else :
+        if data.data == 0 :
+            print 'Warning : Simulating valve turn off'
+        else :
+            print 'Warning : Simulating valve turn on'
+        
+        status.Watering = bool(data.data==1)
+        
 
     pubWateringStatus.publish(status)
 
@@ -100,14 +126,18 @@ def connectToTelemetry(port):
     """
 
     global board
+    global IsInSimMode
 
-    board = Arduino(port)
+    if IsInSimMode == False:
+        board = Arduino(port)
     
-    ctrlValue = int(status.Watering==True)
+        ctrlValue = int(status.Watering==True)
 
-    # Turn of watering
-    board.digital[13].write(ctrlValue)
-    print 'Connected to telemetry control board'
+        # Turn of watering
+        board.digital[13].write(ctrlValue)
+        print 'Connected to telemetry control board'
+    else :
+        print 'Warning : Simulated telemetry control board'
 
 
 def main():
@@ -118,7 +148,10 @@ def main():
     rospy.Subscriber("LOMAS_WateringAbort", std_msgs.msg.Bool, abortCallback)
     rospy.Subscriber("LOMAS_WateringSetInterval", std_msgs.msg.UInt8, intervalCallback)
     rospy.Subscriber("LOMAS_WateringSetDuration", std_msgs.msg.UInt8, durationCallback)
-    rospy.loginfo("Starting up watering node")
+    
+    print ''
+    print "Starting up watering node"
+    print ''
 
     rospy.init_node('watering', anonymous=False)
 
@@ -126,7 +159,9 @@ def main():
     connectToTelemetry(port)
     pubWateringStatus.publish(status)
 
+    print ''
     print 'Watering is waiting for command..'
+    print ''
 
     rate = rospy.Rate(10)  # 10hz
 

@@ -164,6 +164,8 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
  install(PROGRAMS
    scripts/machine_node
+   scripts/watering_node
+   scripts/seq_generation_node
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

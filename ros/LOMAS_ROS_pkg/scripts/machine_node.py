@@ -35,10 +35,12 @@ def loadParameters():
     path = rospy.get_param('~path', "/media/gcode/")
     status.Interval = rospy.get_param('~cultivation_interval', 120)
 
-    print 'Machine param values'
-    print IsInSimMode
-    print port
-    print path
+    print 'Machine param values:'
+    print " * IsInSimMode: ", IsInSimMode
+    print " * Port:        ", port
+    print " * Path:        ", path
+    print " * Interval:    ", status.Interval
+    print ''
     pubMachineStatus.publish(status)
 
 
@@ -61,7 +63,7 @@ def connectToMachine():
     #s = serial.Serial('/dev/ttyACM0',115200)
     print 'Opening Serial Port'
     if IsInSimMode: 
-        print 'Serial port will be simulated'
+        print 'Warning : Serial port will be simulated'
         status.ErrorNr = 0   
     else:
         try:
@@ -260,7 +262,10 @@ def main():
     rospy.Subscriber("LOMAS_MachineStop", std_msgs.msg.Bool, stopCallback)
     rospy.Subscriber("LOMAS_MachineAbort", std_msgs.msg.Bool, abortCallback)
     rospy.Subscriber("LOMAS_MachineSetIntervall", std_msgs.msg.UInt8, intervallCallback)
-    rospy.loginfo("Starting up machine node")
+    
+    print ''
+    print "Starting up machine node"
+    print ''
 
     rospy.init_node('machine', anonymous=False)
 
@@ -268,7 +273,9 @@ def main():
     connectToMachine()
     pubMachineStatus.publish(status)
 
+    print ''
     print 'Machine is waiting for command..'
+    print ''
 
     rate = rospy.Rate(10)  # 10hz
 

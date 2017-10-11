@@ -1,17 +1,28 @@
 <launch>
 
   <node pkg="LOMAS_ROS_pkg" type="watering_node.py" name="watering" output="screen">
-    <param name="sim_port" value="false"/>
+    <param name="sim_port" value="true"/>
     <param name="port" value="/dev/ttyACM0"/>
     <param name="watering_interval" value="120"/>
     <param name="watering_time" value="20"/>
+    <param name="watering_valve_pin" value="13"/>
   </node>
 
   <node pkg="LOMAS_ROS_pkg" type="machine_node.py" name="machine" output="screen">
-    <param name="sim_port" value="false"/>
+    <param name="sim_port" value="true"/>
     <param name="port" value="/dev/ttyUSB0"/>
     <param name="path" value="/media/gcode/"/>
     <param name="cultivation_interval" value="120"/>
+  </node>
+
+  <node pkg="LOMAS_ROS_pkg" type="seq_generation_node.py" name="seq_generation" output="screen">
+    <param name="path" value="/media/gcode/"/>
+    <param name="area_width" value="305"/>
+    <param name="area_length" value="365"/>
+    <param name="plants_distance" value="50"/>
+    <param name="min_distance_to_plats" value="25"/>
+    <param name="min_distance_to_edge" value="25"/>
+    <param name="tool_diameter" value="0"/>
   </node>
 
 </launch>
