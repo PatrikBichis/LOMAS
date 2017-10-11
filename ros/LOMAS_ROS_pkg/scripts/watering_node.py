@@ -142,6 +142,7 @@ def connectToTelemetry(port):
 
 def main():
     global port
+    global status
 
     # Subscribe to topics
     rospy.Subscriber("LOMAS_WateringCmd", std_msgs.msg.UInt8, cmdCallback)
