@@ -2,7 +2,7 @@
 
 [<-Back](../README.md)
 
-![HMI](../images/HMI.jpg)
+![HMI](../images/HMI.PNG)
 ### 2017-09-28 HMI based on Node-Red 
 Starting to test miniature LOMAS with easy user interface
 
