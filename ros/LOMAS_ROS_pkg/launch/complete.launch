@@ -17,7 +17,7 @@
 
   <node pkg="LOMAS_ROS_pkg" type="seq_generation_node.py" name="seq_generation" output="screen">
     <param name="path" value="/media/gcode/"/>
-    <param name="path_to_image" value="/home/patrik/node-red-static/"/>
+    <param name="path_to_image" value="/home/pi/node-red-static/"/>
     <param name="area_width" value="305"/>
     <param name="area_length" value="365"/>
     <param name="plants_distance" value="50"/>
